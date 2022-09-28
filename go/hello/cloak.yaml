@@ -1,0 +1,4 @@
+name: cloak-ruby
+scripts:
+  - path: magefiles
+    sdk: go
