@@ -1,0 +1,13 @@
+name: tsnetlify
+scripts:
+  - path: .
+    sdk: ts
+dependencies:
+  - git:
+      remote: https://github.com/dagger/dagger.git
+      ref: cloak
+      path: examples/yarn/cloak.yaml
+  - git:
+      remote: https://github.com/dagger/dagger.git
+      ref: cloak
+      path: examples/netlify/ts/cloak.yaml
