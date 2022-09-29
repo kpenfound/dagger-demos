@@ -1,0 +1,15 @@
+extend type Query {
+    hello: Hello!
+}
+
+type Hello {
+    build(opts: GoOpts!): Filesystem!
+    run(opts: GoOpts!): String!
+    test(opts: GoOpts!): String!
+}
+
+input GoOpts {
+    version: String
+    arch: String
+    os: String
+}
