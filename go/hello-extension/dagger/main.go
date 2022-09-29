@@ -8,7 +8,6 @@ import (
 )
 
 const goimg = "golang:latest"
-const gobin = "/usr/local/go/bin/go"
 
 func (g *hello) build(ctx context.Context, opts GoOpts) (*dagger.Filesystem, error) {
 	client, err := dagger.Client(ctx)
@@ -31,7 +30,7 @@ func (g *hello) build(ctx context.Context, opts GoOpts) (*dagger.Filesystem, err
 		client,
 		goImage,
 		work,
-		[]string{gobin, "build"},
+		[]string{"go", "build"},
 	)
 	if err != nil {
 		return nil, err
@@ -62,7 +61,7 @@ func (g *hello) run(ctx context.Context, opts GoOpts) (string, error) {
 		client,
 		goImage,
 		work,
-		[]string{gobin, "run", "main.go"},
+		[]string{"go", "run", "main.go"},
 	)
 }
 
@@ -88,7 +87,7 @@ func (g *hello) test(ctx context.Context, opts GoOpts) (string, error) {
 		client,
 		goImage,
 		work,
-		[]string{gobin, "test"},
+		[]string{"go", "test"},
 	)
 }
 

@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Khan/genqlient v0.5.0
-	go.dagger.io/dagger v0.2.35-0.20220916233111-f8b7d3a0a33f
+	go.dagger.io/dagger v0.2.35-0.20220928234607-03ea15e68fcc
 	gotest.tools/v3 v3.0.3
 )
 

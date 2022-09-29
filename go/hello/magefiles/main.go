@@ -11,8 +11,6 @@ import (
 	"go.dagger.io/dagger/sdk/go/dagger"
 )
 
-const gobin = "/usr/local/go/bin/go"
-
 func Run(ctx context.Context) {
 	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
 		client, err := dagger.Client(ctx)
@@ -35,7 +33,7 @@ func Run(ctx context.Context) {
 			client,
 			goImage,
 			work,
-			[]string{gobin, "run", "main.go"},
+			[]string{"go", "run", "main.go"},
 		)
 		if err != nil {
 			return err
@@ -71,7 +69,7 @@ func Test(ctx context.Context) {
 			client,
 			goImage,
 			work,
-			[]string{gobin, "test"},
+			[]string{"go", "test"},
 		)
 		if err != nil {
 			return err
