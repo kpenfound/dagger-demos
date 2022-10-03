@@ -1,4 +1,6 @@
 #!/bin/bash
+touch cloak.yaml
+
 WORK=$(cloak do<<'EOF'
 query {
     host {
@@ -42,3 +44,6 @@ EOF
 )
 OUT=$(echo -n $HELLO | jq -r '.core.image.exec.fs.exec.stdout')
 echo $OUT
+
+#cleanup
+rm cloak.yaml
