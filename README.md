@@ -10,3 +10,7 @@ This project has a number of dagger examples covering many use cases
 ## Typescript
 
 - [simple Netlify deploy](./ts/netlify/)
+
+## Make and Bash
+
+- [make hello world](./make/hello/)

@@ -30,6 +30,32 @@ type Core struct {
 	AddSecret dagger.SecretID `json:"addSecret"`
 }
 
+// A directory
+type Directory struct {
+	// The content-addressed identifier of the directory
+	ID string `json:"id"`
+	// Return a list of files and directories at the given path
+	Contents []string `json:"contents"`
+	// Retrieve a file at the given path
+	File *File `json:"file"`
+	// A secret backed by the file at the given path
+	Secret dagger.SecretID `json:"secret"`
+	// This directory plus a new file written at the given path
+	WithNewFile *Directory `json:"withNewFile"`
+	// This directory plus the contents of the given file copied to the given path
+	WithCopiedFile *Directory `json:"withCopiedFile"`
+	// This directory with the file at the given path removed
+	WithoutFile *Directory `json:"withoutFile"`
+	// Retrieve a directory at the given path
+	Directory *Directory `json:"directory"`
+	// This directory plus a directory written at the given path
+	WithDirectory *Directory `json:"withDirectory"`
+	// This directory with the directory at the given path removed
+	WithoutDirectory *Directory `json:"withoutDirectory"`
+	// The difference between this directory and an another directory
+	Diff *Directory `json:"diff"`
+}
+
 type ExecEnvInput struct {
 	// Env var name
 	Name string `json:"name"`
@@ -72,12 +98,22 @@ type Extension struct {
 	Sdk string `json:"sdk"`
 }
 
+// A file
+type File struct {
+	// The content-addressed identifier of the file
+	ID string `json:"id"`
+	// The contents of the file
+	Contents string `json:"contents"`
+	// The size of the file, in bytes
+	Size int `json:"size"`
+}
+
 // A git ref (tag or branch)
 type GitRef struct {
 	// The digest of the current value of this ref
 	Digest string `json:"digest"`
 	// The filesystem tree at this ref
-	Tree *dagger.Filesystem `json:"tree"`
+	Tree *Directory `json:"tree"`
 }
 
 // A git repository
