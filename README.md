@@ -6,6 +6,7 @@ This project has a number of dagger examples covering many use cases
 
 - [simple hello world](./go/hello/)
 - [hello world using an extension](./go/hello-extension/)
+- [hello world demonstrating caching](./go/caching/)
 
 ## Typescript
 
@@ -14,3 +15,4 @@ This project has a number of dagger examples covering many use cases
 ## Make and Bash
 
 - [make hello world](./make/hello/)
+- [make big cpp project](./make/cpp/)
