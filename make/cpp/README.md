@@ -4,6 +4,8 @@ This is a silly example that builds postgresql from source to demonstrate build 
 
 Note: run `make delete` to cleanup `bin/` directory
 
+Note: The caching is currently broken between the build and copy steps. It runs the build twice.
+
 ## Timings
 
 `make postgresql`: about 2m30s every execution on m1
