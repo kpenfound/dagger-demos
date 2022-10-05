@@ -1,0 +1,14 @@
+extend type Query {
+    golang: Golang!
+}
+
+type Golang {
+    do(project: FSID!, opts: GoArgs!): Filesystem!
+}
+
+input GoArgs {
+    version: String
+    arch: String
+    os: String
+    args: [String!]!
+}
