@@ -1,0 +1,34 @@
+query Workdir {
+  host {
+    workdir {
+      read {
+        id
+      }
+    }
+  }
+}
+
+query Make($workfs: FSID!, $task: String!) {
+  core {
+    image(ref: "alpine") {
+      exec(input: {
+        args: ["apk", "add", "make"]
+      }) {
+        fs {
+          exec(input: {
+            args: ["make", $task]
+            workdir: "/src"
+            mounts: [
+              {
+                path: "/src"
+                fs: $workfs
+              }
+            ]
+          }) {
+            stdout
+          }
+        }
+      }
+    }
+  }
+}
