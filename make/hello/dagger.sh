@@ -1,7 +1,7 @@
 #!/bin/bash
 touch cloak.yaml
 
-WORK=$(cloak do<<'EOF'
+WORK=$(dagger do<<'EOF'
 query {
     host {
         workdir {
@@ -15,7 +15,7 @@ EOF
 )
 WORKFS=$(echo -n $WORK | jq -r '.host.workdir.read.id')
 
-HELLO=$(cloak --set "workfs=$WORKFS" do<<'EOF'
+HELLO=$(dagger --set "workfs=$WORKFS" do<<'EOF'
 query ($workfs: FSID!) {
   core {
     image(ref: "alpine") {

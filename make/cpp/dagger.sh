@@ -2,7 +2,7 @@
 touch cloak.yaml
 
 echo "Loading workdir"
-WORK=$(cloak do<<'EOF'
+WORK=$(dagger do<<'EOF'
 query {
   host {
     workdir {
@@ -17,7 +17,7 @@ EOF
 WORKFS=$(echo -n $WORK | jq -r '.host.workdir.read.id')
 
 echo "Preparing Builder"
-BUILDER=$(cloak do<<'EOF'
+BUILDER=$(dagger do<<'EOF'
 query {
   core {
     image(ref: "debian:stable") {
@@ -42,7 +42,7 @@ EOF
 BUILDERID=$(echo -n $BUILDER | jq -r '.core.image.exec.fs.exec.fs.id')
 
 echo "Doing postgresql build"
-BUILD=$(cloak --set "workfs=$WORKFS" --set "builderid=$BUILDERID" do<<'EOF'
+BUILD=$(dagger --set "workfs=$WORKFS" --set "builderid=$BUILDERID" do<<'EOF'
 query ($builderid: FSID!, $workfs: FSID!) {
   core {
     filesystem(id: $builderid) {
@@ -68,7 +68,7 @@ EOF
 BUILDFS=$(echo -n $BUILD | jq -r '.core.filesystem.exec.mount.id')
 
 echo "Copying build outputs"
-CP=$(cloak --local-dir bin=./bin --set "buildfs=$BUILDFS" do<<'EOF'
+CP=$(dagger --local-dir bin=./bin --set "buildfs=$BUILDFS" do<<'EOF'
 query($buildfs: FSID!) {
   host {
     dir(id: "bin") {
