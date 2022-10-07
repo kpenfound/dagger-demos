@@ -7,6 +7,7 @@ This project has a number of dagger examples covering many use cases
 - [simple hello world](./go/hello/)
 - [hello world using an extension](./go/hello-extension/)
 - [hello world demonstrating caching](./go/caching/)
+- [org managed ci cli](./go/cli/)
 
 ## Typescript
 
