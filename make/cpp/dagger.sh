@@ -1,83 +1,22 @@
 #!/bin/bash
 touch cloak.yaml
 
+RUN="dagger do -f ./queries.graphql"
+
 echo "Loading workdir"
-WORK=$(dagger do<<'EOF'
-query {
-  host {
-    workdir {
-      read {
-        id
-      }
-    }
-  }
-}
-EOF
-)
+WORK=$($RUN Workdir)
 WORKFS=$(echo -n $WORK | jq -r '.host.workdir.read.id')
 
 echo "Preparing Builder"
-BUILDER=$(dagger do<<'EOF'
-query {
-  core {
-    image(ref: "debian:stable") {
-      exec(input: {
-        args: ["apt-get", "update"]
-      }) {
-        fs {
-          exec(input: {
-            args: ["apt-get", "install", "-y", "build-essential", "openssl", "curl", "libreadline-dev", "libpython-all-dev", "libperl-dev", "zlib1g-dev"]
-          }) {
-            fs {
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-}
-EOF
-)
+BUILDER=$($RUN Builder)
 BUILDERID=$(echo -n $BUILDER | jq -r '.core.image.exec.fs.exec.fs.id')
 
 echo "Doing postgresql build"
-BUILD=$(dagger --set "workfs=$WORKFS" --set "builderid=$BUILDERID" do<<'EOF'
-query ($builderid: FSID!, $workfs: FSID!) {
-  core {
-    filesystem(id: $builderid) {
-      exec(input: {
-        args: ["make", "postgresql"]
-        workdir: "/src"
-        mounts: [
-          {
-            path: "/src"
-            fs: $workfs
-          }
-        ]
-      }) {
-        mount(path: "/src") {
-          id
-        }
-      }
-    }
-  }
-}
-EOF
-)
+BUILD=$($RUN Build --set "workfs=$WORKFS" --set "builderid=$BUILDERID")
 BUILDFS=$(echo -n $BUILD | jq -r '.core.filesystem.exec.mount.id')
 
 echo "Copying build outputs"
-CP=$(dagger --local-dir bin=./bin --set "buildfs=$BUILDFS" do<<'EOF'
-query($buildfs: FSID!) {
-  host {
-    dir(id: "bin") {
-      write(contents: $buildfs, path: ".")
-    }
-  }
-}
-EOF
-)
+CP=$($RUN Copy --local-dir bin=./bin --set "buildfs=$BUILDFS")
 
 ls -la bin
 

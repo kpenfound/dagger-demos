@@ -1,0 +1,58 @@
+query Workdir {
+  host {
+    workdir {
+      read {
+        id
+      }
+    }
+  }
+}
+
+query Builder {
+  core {
+    image(ref: "debian:stable") {
+      exec(input: {
+        args: ["apt-get", "update"]
+      }) {
+        fs {
+          exec(input: {
+            args: ["apt-get", "install", "-y", "build-essential", "openssl", "curl", "libreadline-dev", "libpython-all-dev", "libperl-dev", "zlib1g-dev"]
+          }) {
+            fs {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query Build ($builderid: FSID!, $workfs: FSID!) {
+  core {
+    filesystem(id: $builderid) {
+      exec(input: {
+        args: ["make", "postgresql"]
+        workdir: "/src"
+        mounts: [
+          {
+            path: "/src"
+            fs: $workfs
+          }
+        ]
+      }) {
+        mount(path: "/src") {
+          id
+        }
+      }
+    }
+  }
+}
+
+query Copy ($buildfs: FSID!) {
+  host {
+    dir(id: "bin") {
+      write(contents: $buildfs, path: ".")
+    }
+  }
+}
