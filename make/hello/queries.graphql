@@ -8,24 +8,17 @@ query Workdir {
   }
 }
 
-query Make($workfs: FSID!, $task: String!) {
-  core {
-    image(ref: "alpine") {
-      exec(input: {
-        args: ["apk", "add", "make"]
-      }) {
-        fs {
-          exec(input: {
-            args: ["make", $task]
-            workdir: "/src"
-            mounts: [
-              {
-                path: "/src"
-                fs: $workfs
+query Make($workfs: DirectoryID!, $task: String!) {
+  container {
+    from(address: "index.docker.io/alpine:latest") {
+      exec(args: ["apk", "add", "make"]) {
+        withMountedDirectory(path: "/src", source: $workfs) {
+          withWorkdir(path: "/src") {
+            exec(args: ["make", $task]) {
+              stdout {
+                contents
               }
-            ]
-          }) {
-            stdout
+            }
           }
         }
       }
