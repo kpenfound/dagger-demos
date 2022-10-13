@@ -18,7 +18,10 @@ func Run(ctx context.Context) {
 		golang := core.Container().From("golang:latest")
 
 		// Set workdir
-		src := api.DirectoryID(ctx.Workdir) // hacky cast cannot use ctx.Workdir (variable of type core.DirectoryID) as type api.DirectoryID
+		src, err := core.Host().Workdir().Read().ID(ctx)
+		if err != nil {
+			return err
+		}
 		golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
 
 		// Execute Command
@@ -48,7 +51,10 @@ func Test(ctx context.Context) {
 		golang := core.Container().From("golang:latest")
 
 		// Set workdir
-		src := api.DirectoryID(ctx.Workdir) // hacky cast cannot use ctx.Workdir (variable of type core.DirectoryID) as type api.DirectoryID
+		src, err := core.Host().Workdir().Read().ID(ctx)
+		if err != nil {
+			return err
+		}
 		golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
 
 		// Execute Command
