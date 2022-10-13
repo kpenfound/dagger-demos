@@ -110,7 +110,11 @@ func Push(ctx context.Context) {
 		// Get base image for publishing
 		base := core.Container().From(baseImage)
 		// Add built binary to /bin
-		base = base.WithMountedFile("/bin/hello", helloBin)
+		base = base.WithMountedFile("/tmp/hello", helloBin)
+		// Copy mounted file to rootfs
+		base = base.Exec(api.ContainerExecOpts{
+			Args: []string{"cp", "/tmp/hello", "/bin/hello"},
+		})
 		// Set entrypoint
 		base = base.WithEntrypoint([]string{"/bin/hello"})
 		// Publish image
