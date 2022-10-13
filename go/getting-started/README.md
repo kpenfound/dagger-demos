@@ -7,7 +7,7 @@ A simple getting started app
 - Go - [install here](https://go.dev/doc/install)
 - Docker - [install here](https://docs.docker.com/engine/install/)
 
-## Setup
+## Create a simple Go app
 
 - Create a go project following [instructions here](https://go.dev/doc/code#Command)
 - You should now have a go.mod, go.sum, and main.go
@@ -18,7 +18,7 @@ A simple getting started app
 Hello
 ```
 
-## Dagger time
+## Add Dagger
 
 > **Note**
 > The `<tag>` below has not been created yet
