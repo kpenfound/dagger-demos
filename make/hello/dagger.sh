@@ -6,7 +6,7 @@ RUN="dagger do -f ./queries.graphql"
 WORKFS=$($RUN Workdir | jq -r '.host.workdir.read.id')
 
 TASK="hello"
-HELLO=$($RUN --set "workfs=$WORKFS" --set "task=$TASK" Make | jq -r '.container.from.exec.withMountedDirectory.withWorkdir.exec.stdout.contents')
+HELLO=$($RUN --set "workfs=$WORKFS" --set "task=$TASK" Make | jq -r '.. | .contents? | select(. != null)')
 echo $HELLO
 
 #cleanup
