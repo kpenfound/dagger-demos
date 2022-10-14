@@ -23,8 +23,6 @@ Hello
 > **Note**
 > The `<tag>` below has not been created yet
 
-> **Note**
-> The cloak.yaml in this directory will not be required
 
 - `go get go.dagger.io/dagger@<tag>`
 - `go mod edit -replace github.com/docker/docker=github.com/docker/docker@v20.10.3-0.20220414164044-61404de7df1a+incompatible`
