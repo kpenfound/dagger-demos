@@ -30,8 +30,8 @@ func main() {
 		run(ctx)
 	case "test":
 		test(ctx)
-	case "push":
-		push(ctx)
+	case "publish":
+		publish(ctx)
 	default:
 		fmt.Printf("Unknown task %s\n", task)
 		os.Exit(1)
@@ -41,28 +41,31 @@ func main() {
 func run(ctx context.Context) {
 	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
 		core := api.New(ctx.Client)
-
-		// Load image
-		golang := core.Container().From(golangImage)
-
-		// Set workdir
+		
+		// get working directory on host
 		src, err := core.Host().Workdir().Read().ID(ctx)
 		if err != nil {
 			return err
 		}
+		
+		// initialize new container from image
+		golang := core.Container().From(golangImage)
+
+		// mount working directory to /src
 		golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
 
-		// Execute Command
+		// execute command
 		cmd := golang.Exec(api.ContainerExecOpts{
 			Args: []string{"go", "run", "main.go"},
 		})
 
-		// Get Command Output
+		// get command output
 		out, err := cmd.Stdout().Contents(ctx)
 		if err != nil {
 			return err
 		}
 
+		// print output to console
 		fmt.Println(out)
 
 		return nil
@@ -75,27 +78,30 @@ func test(ctx context.Context) {
 	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
 		core := api.New(ctx.Client)
 
-		// Load image
-		golang := core.Container().From(golangImage)
-
-		// Set workdir
+		// get working directory on host
 		src, err := core.Host().Workdir().Read().ID(ctx)
 		if err != nil {
 			return err
 		}
+		
+		// initialize new container from image
+		golang := core.Container().From(golangImage)
+		
+		// mount working directory to /src
 		golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
 
-		// Execute Command
+		// execute command
 		cmd := golang.Exec(api.ContainerExecOpts{
 			Args: []string{"go", "test"},
 		})
 
-		// Get Command Output
+		// get command output
 		out, err := cmd.Stdout().Contents(ctx)
 		if err != nil {
 			return err
 		}
 
+		// print output to console
 		fmt.Println(out)
 
 		return nil
@@ -104,42 +110,48 @@ func test(ctx context.Context) {
 	}
 }
 
-func push(ctx context.Context) {
+func publish(ctx context.Context) {
 	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
 		core := api.New(ctx.Client)
 
-		// Load image
-		builder := core.Container().From(golangImage)
-
-		// Set workdir
+		// get working directory on host
 		src, err := core.Host().Workdir().Read().ID(ctx)
 		if err != nil {
 			return err
 		}
+		
+		// initialize new container from image
+		builder := core.Container().From(golangImage)
+
+		// mount working directory to /src
 		builder = builder.WithMountedDirectory("/src", src).WithWorkdir("/src")
 
-		// Execute Command
+		// execute build command
 		builder = builder.Exec(api.ContainerExecOpts{
 			Args: []string{"go", "build", "-o", "hello"},
 		})
 
-		// Get built binary
+		// get built binary file
 		helloBin, err := builder.File("/src/hello").ID(ctx)
 		if err != nil {
 			return err
 		}
 
-		// Get base image for publishing
+		// initialize new container for publishing from image
 		base := core.Container().From(baseImage)
-		// Add built binary to /bin
+		
+		// mount binary file at container path
 		base = base.WithMountedFile("/tmp/hello", helloBin)
-		// Copy mounted file to rootfs
+		
+		// copy mounted file to container filesystem
 		base = base.Exec(api.ContainerExecOpts{
 			Args: []string{"cp", "/tmp/hello", "/bin/hello"},
 		})
-		// Set entrypoint
+		
+		// set container entrypoint
 		base = base.WithEntrypoint([]string{"/bin/hello"})
-		// Publish image
+		
+		// publish image
 		addr, err := base.Publish(ctx, publishAddress)
 		if err != nil {
 			return err
