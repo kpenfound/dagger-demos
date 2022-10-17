@@ -30,7 +30,7 @@ func main() {
 		run(ctx)
 	case "test":
 		test(ctx)
-	case "push":
+	case "publish":
 		publish(ctx)
 	default:
 		fmt.Printf("Unknown task %s\n", task)
