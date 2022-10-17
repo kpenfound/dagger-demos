@@ -31,7 +31,7 @@ func main() {
 	case "test":
 		test(ctx)
 	case "push":
-		push(ctx)
+		publish(ctx)
 	default:
 		fmt.Printf("Unknown task %s\n", task)
 		os.Exit(1)
@@ -110,7 +110,7 @@ func test(ctx context.Context) {
 	}
 }
 
-func push(ctx context.Context) {
+func publish(ctx context.Context) {
 	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
 		core := api.New(ctx.Client)
 
