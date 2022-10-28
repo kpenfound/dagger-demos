@@ -3,7 +3,7 @@ module github.com/kpenfound/dagger-demos
 go 1.18
 
 require (
-	go.dagger.io/dagger v0.2.35-0.20221013212912-d988bac25577
+	go.dagger.io/dagger v0.3.0-alpha.1
 	gotest.tools/v3 v3.0.3
 )
 
@@ -38,6 +38,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
+	github.com/magefile/mage v1.14.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
