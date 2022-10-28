@@ -6,14 +6,13 @@ require (
 	cloud.google.com/go/compute v1.10.0
 	dagger.io/dagger v0.3.1
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.3
-	github.com/Khan/genqlient v0.5.0
 	github.com/aws/aws-sdk-go-v2 v1.16.16
 	github.com/hashicorp/vault/api v1.8.0
-	go.dagger.io/dagger v0.2.35-0.20220928234607-03ea15e68fcc
 	gotest.tools/v3 v3.0.3
 )
 
 require (
+	github.com/Khan/genqlient v0.5.0 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/armon/go-metrics v0.3.9 // indirect
