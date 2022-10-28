@@ -1,8 +1,6 @@
-# hello-extension
+# caching
 
-A simple hello world app with a Golang extension to demonstrate mod caching
-
-This expands on the basic version [here](../hello/).
+A simple hello world app with a Golang to demonstrate mod caching
 
 Try it out!
 
@@ -11,16 +9,11 @@ Try it out!
 
 Dagger is executed in the magefile `magefiles/main.go`
 
-The `Run` and `Test` tasks each load the dagger engine, and run our extension located in `golang/`.
+The `Run`, `Test`, and `Benchmark` tasks each connect to the dagger engine and run a pipeline.
 
 ## Performance:
 In both cases, a fresh workdir cache was used
 
-Using the golang extension _without_ module caching, `mage benchmark` took 1m12s.
+_Without_ module caching, `mage benchmark` took 2m57s.
 
-Using the golang extension _with_ module caching, `mage benchmark` took 50s.
-
-
-Roughly 30% time saved just by adding this to the `fs.exec`:
-
-`cacheMounts:{name:"gomod", path:"/cache", sharingMode:"locked"},`
+_With_ module caching, `CACHING_ENABLED=1 mage benchmark` took 1m23s.

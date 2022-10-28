@@ -1,7 +1,0 @@
-name: go-hello
-scripts:
-  - path: magefiles
-    sdk: go
-extensions:
-  - path: dagger
-    sdk: go

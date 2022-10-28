@@ -5,10 +5,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
-	"github.com/Khan/genqlient/graphql"
-	"go.dagger.io/dagger/engine"
-	"go.dagger.io/dagger/sdk/go/dagger"
+	"dagger.io/dagger"
 )
 
 type GoArgs struct {
@@ -19,207 +18,118 @@ type GoArgs struct {
 }
 
 func Run(ctx context.Context) {
-	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
-		client, err := dagger.Client(ctx)
-		if err != nil {
-			return err
-		}
-
-		work, err := workdir(ctx, client)
-		if err != nil {
-			return err
-		}
-
-		args := GoArgs{
-			Args: []string{"go", "run", "main.go"},
-		}
-		out, err := exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		return nil
-	}); err != nil {
+	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout))
+	if err != nil {
 		panic(err)
 	}
+	defer client.Close()
+
+	work, err := workdir(ctx, client)
+	if err != nil {
+		panic(err)
+	}
+
+	args := []string{"go", "run", "main.go"}
+	out, err := exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
 }
 
 func Test(ctx context.Context) {
-	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
-		client, err := dagger.Client(ctx)
-		if err != nil {
-			return err
-		}
-
-		work, err := workdir(ctx, client)
-		if err != nil {
-			return err
-		}
-
-		args := GoArgs{
-			Args: []string{"go", "test"},
-		}
-		out, err := exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		return nil
-	}); err != nil {
+	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout))
+	if err != nil {
 		panic(err)
 	}
+	defer client.Close()
+
+	work, err := workdir(ctx, client)
+	if err != nil {
+		panic(err)
+	}
+
+	args := []string{"go", "test"}
+	out, err := exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
 }
 
 func Benchmark(ctx context.Context) {
-	if err := engine.Start(ctx, &engine.Config{}, func(ctx engine.Context) error {
-		client, err := dagger.Client(ctx)
-		if err != nil {
-			return err
-		}
-
-		work, err := workdir(ctx, client)
-		if err != nil {
-			return err
-		}
-
-		args := GoArgs{
-			Args: []string{"go", "test"},
-		}
-		out, err := exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		args = GoArgs{
-			Args: []string{"go", "run", "main.go"},
-		}
-		out, err = exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		args = GoArgs{
-			Args: []string{"go", "build"},
-		}
-		out, err = exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		args = GoArgs{
-			Args: []string{"go", "install"},
-		}
-		out, err = exec(
-			ctx,
-			client,
-			work,
-			args,
-		)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(out)
-
-		return nil
-	}); err != nil {
+	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout))
+	if err != nil {
 		panic(err)
 	}
-}
+	defer client.Close()
 
-func workdir(ctx context.Context, client graphql.Client) (dagger.FSID, error) {
-	req := &graphql.Request{
-		Query: `
-query {
-	host {
-		workdir {
-			read {
-				id
-			}
-		}
-	}	
-}
-`,
-	}
-	resp := struct {
-		Host struct {
-			Workdir struct {
-				Read struct {
-					ID dagger.FSID
-				}
-			}
-		}
-	}{}
-
-	err := client.MakeRequest(ctx, req, &graphql.Response{Data: &resp})
-
-	return resp.Host.Workdir.Read.ID, err
-}
-
-func exec(ctx context.Context, client graphql.Client, mount dagger.FSID, args GoArgs) (string, error) {
-	req := &graphql.Request{
-		Query: `
-query ($mount: FSID!, $args: GoArgs!) {
-	golang {
-		do(project: $mount, opts: $args) {
-			id
-		}
-	}
-}
-`,
-		Variables: map[string]any{
-			"mount": mount,
-			"args":  args,
-		},
-	}
-	resp := struct {
-		Golang struct {
-			Do struct {
-				Fileystem struct {
-					ID string
-				}
-			}
-		}
-	}{}
-	err := client.MakeRequest(ctx, req, &graphql.Response{Data: &resp})
+	work, err := workdir(ctx, client)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
 
-	return resp.Golang.Do.Fileystem.ID, nil
+	args := []string{"go", "test"}
+	out, err := exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
+
+	args = []string{"go", "run", "main.go"}
+	out, err = exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
+
+	args = []string{"go", "build"}
+	out, err = exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
+
+	args = []string{"go", "install"}
+	out, err = exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
+}
+
+func workdir(ctx context.Context, client *dagger.Client) (dagger.DirectoryID, error) {
+	return client.Host().Workdir().Read().ID(ctx)
+}
+
+func exec(ctx context.Context, client *dagger.Client, source dagger.DirectoryID, args []string) (string, error) {
+	container := client.Container().From("golang:latest")
+	container = container.WithMountedDirectory("/src", source).WithWorkdir("/src")
+
+	// Enable or disable mod caching with CACHING_ENABLED=1 sdfsdfsdfvsdljksdfljsdf
+	if shouldCache() == "1" {
+		cacheKey := "gomods"
+		cacheID, err := client.CacheVolume(cacheKey).ID(ctx)
+		if err != nil {
+			return "", err
+		}
+
+		container = container.WithMountedCache(cacheID, "/cache")
+		container = container.WithEnvVariable("GOMODCACHE", "/cache")
+	}
+
+	container = container.Exec(dagger.ContainerExecOpts{
+		Args: args,
+	})
+	return container.Stdout().Contents(ctx)
+}
+
+func shouldCache() string {
+	return os.Getenv("CACHING_ENABLED")
 }

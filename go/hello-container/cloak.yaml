@@ -1,4 +1,0 @@
-name: go-hello
-scripts:
-  - path: magefiles
-    sdk: go
