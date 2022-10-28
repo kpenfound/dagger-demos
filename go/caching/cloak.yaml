@@ -1,7 +1,0 @@
-name: go-caching
-scripts:
-  - path: magefiles
-    sdk: go
-extensions:
-  - path: golang
-    sdk: go
