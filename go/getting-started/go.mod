@@ -3,23 +3,23 @@ module github.com/kpenfound/dagger-demos
 go 1.18
 
 require (
-	go.dagger.io/dagger v0.3.0-alpha.1
+	dagger.io/dagger v0.4.0
 	gotest.tools/v3 v3.0.3
 )
 
 require (
-	dagger.io/dagger v0.3.1 // indirect
 	github.com/Khan/genqlient v0.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/bhoriuchi/graphql-go-tools v1.0.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/containerd/console v1.0.3 // indirect
-	github.com/containerd/containerd v1.6.8 // indirect
+	github.com/containerd/containerd v1.6.9 // indirect
 	github.com/containerd/continuity v0.3.0 // indirect
 	github.com/containerd/ttrpc v1.1.0 // indirect
 	github.com/containerd/typeurl v1.0.2 // indirect
-	github.com/dagger/dagger v0.3.2 // indirect
+	github.com/dagger/dagger v0.3.3 // indirect
+	github.com/dagger/graphql v0.0.0-20221102000338-24d5e47d3b72 // indirect
+	github.com/dagger/graphql-go-tools v0.0.0-20221102001222-e68b44170936 // indirect
 	github.com/docker/cli v20.10.18+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker v20.10.18+incompatible // indirect
@@ -34,19 +34,15 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/graphql-go/graphql v0.8.0 // indirect
-	github.com/graphql-go/handler v0.2.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
-	github.com/magefile/mage v1.14.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/moby/buildkit v0.10.5 // indirect
 	github.com/moby/locker v1.0.1 // indirect
-	github.com/moby/patternmatcher v0.5.0 // indirect
 	github.com/moby/sys/signal v0.7.0 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect

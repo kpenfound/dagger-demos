@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	cloud.google.com/go/compute v1.10.0
-	dagger.io/dagger v0.3.1
+	dagger.io/dagger v0.4.0
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.3
 	github.com/aws/aws-sdk-go-v2 v1.16.16
 	github.com/hashicorp/vault/api v1.8.0
@@ -18,15 +18,16 @@ require (
 	github.com/armon/go-metrics v0.3.9 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/aws/smithy-go v1.13.3 // indirect
-	github.com/bhoriuchi/graphql-go-tools v1.0.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.0.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/containerd/console v1.0.3 // indirect
-	github.com/containerd/containerd v1.6.8 // indirect
+	github.com/containerd/containerd v1.6.9 // indirect
 	github.com/containerd/continuity v0.3.0 // indirect
 	github.com/containerd/ttrpc v1.1.0 // indirect
 	github.com/containerd/typeurl v1.0.2 // indirect
-	github.com/dagger/dagger v0.3.2 // indirect
+	github.com/dagger/dagger v0.3.3 // indirect
+	github.com/dagger/graphql v0.0.0-20221102000338-24d5e47d3b72 // indirect
+	github.com/dagger/graphql-go-tools v0.0.0-20221102001222-e68b44170936 // indirect
 	github.com/docker/cli v20.10.17+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker v20.10.17+incompatible // indirect
@@ -46,8 +47,6 @@ require (
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
-	github.com/graphql-go/graphql v0.8.0 // indirect
-	github.com/graphql-go/handler v0.2.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect

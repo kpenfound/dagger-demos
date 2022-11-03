@@ -45,10 +45,7 @@ func run(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src, err := client.Host().Workdir().Read().ID(ctx)
-	if err != nil {
-		panic(err)
-	}
+	src := client.Host().Workdir()
 
 	// initialize new container from image
 	golang := client.Container().From(golangImage)
@@ -79,10 +76,7 @@ func test(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src, err := client.Host().Workdir().Read().ID(ctx)
-	if err != nil {
-		panic(err)
-	}
+	src := client.Host().Workdir()
 
 	// initialize new container from image
 	golang := client.Container().From(golangImage)
@@ -113,10 +107,7 @@ func publish(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src, err := client.Host().Workdir().Read().ID(ctx)
-	if err != nil {
-		panic(err)
-	}
+	src := client.Host().Workdir()
 
 	// initialize new container from image
 	builder := client.Container().From(golangImage)
@@ -130,10 +121,7 @@ func publish(ctx context.Context) {
 	})
 
 	// get built binary file
-	helloBin, err := builder.File("/src/hello").ID(ctx)
-	if err != nil {
-		panic(err)
-	}
+	helloBin := builder.File("/src/hello")
 
 	// initialize new container for publishing from image
 	base := client.Container().From(baseImage)
