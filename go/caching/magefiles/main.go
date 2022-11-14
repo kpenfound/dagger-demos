@@ -35,6 +35,24 @@ func Run(ctx context.Context) {
 	fmt.Println(out)
 }
 
+func Repro(ctx context.Context) {
+	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout), dagger.WithWorkdir("../"))
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+
+	work := client.Host().Directory("caching")
+
+	args := []string{"go", "run", "main.go"}
+	out, err := exec(ctx, client, work, args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(out)
+}
+
 func Test(ctx context.Context) {
 	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout))
 	if err != nil {
@@ -95,7 +113,7 @@ func Benchmark(ctx context.Context) {
 	fmt.Println(out)
 }
 
-func exec(ctx context.Context, client *dagger.Client, source dagger.Directory, args []string) (string, error) {
+func exec(ctx context.Context, client *dagger.Client, source *dagger.Directory, args []string) (string, error) {
 	container := client.Container().From("golang:latest")
 	container = container.WithMountedDirectory("/src", source).WithWorkdir("/src")
 
