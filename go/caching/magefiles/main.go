@@ -24,25 +24,7 @@ func Run(ctx context.Context) {
 	}
 	defer client.Close()
 
-	work := client.Host().Workdir()
-
-	args := []string{"go", "run", "main.go"}
-	out, err := exec(ctx, client, work, args)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(out)
-}
-
-func Repro(ctx context.Context) {
-	client, err := dagger.Connect(ctx, dagger.WithLogOutput(os.Stdout), dagger.WithWorkdir("../"))
-	if err != nil {
-		panic(err)
-	}
-	defer client.Close()
-
-	work := client.Host().Directory("caching")
+	work := client.Host().Directory(".")
 
 	args := []string{"go", "run", "main.go"}
 	out, err := exec(ctx, client, work, args)
@@ -60,7 +42,7 @@ func Test(ctx context.Context) {
 	}
 	defer client.Close()
 
-	work := client.Host().Workdir()
+	work := client.Host().Directory(".")
 
 	args := []string{"go", "test"}
 	out, err := exec(ctx, client, work, args)
@@ -78,7 +60,7 @@ func Benchmark(ctx context.Context) {
 	}
 	defer client.Close()
 
-	work := client.Host().Workdir()
+	work := client.Host().Directory(".")
 
 	args := []string{"go", "test"}
 	out, err := exec(ctx, client, work, args)
@@ -114,11 +96,13 @@ func Benchmark(ctx context.Context) {
 }
 
 func exec(ctx context.Context, client *dagger.Client, source *dagger.Directory, args []string) (string, error) {
-	container := client.Container().From("golang:latest")
-	container = container.WithMountedDirectory("/src", source).WithWorkdir("/src")
+	container := client.Container().
+		From("golang:latest").
+		WithMountedDirectory("/src", source).
+		WithWorkdir("/src")
 
 	// Enable or disable mod caching with CACHING_ENABLED=1
-	if shouldCache() == "1" {
+	if shouldCache() {
 		cacheKey := "gomods"
 		cache := client.CacheVolume(cacheKey)
 
@@ -126,12 +110,10 @@ func exec(ctx context.Context, client *dagger.Client, source *dagger.Directory, 
 		container = container.WithEnvVariable("GOMODCACHE", "/cache")
 	}
 
-	container = container.Exec(dagger.ContainerExecOpts{
-		Args: args,
-	})
-	return container.Stdout().Contents(ctx)
+	container = container.WithExec(args)
+	return container.Stdout(ctx)
 }
 
-func shouldCache() string {
-	return os.Getenv("CACHING_ENABLED")
+func shouldCache() bool {
+	return os.Getenv("CACHING_ENABLED") == "1"
 }
