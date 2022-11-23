@@ -45,21 +45,17 @@ func run(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src := client.Host().Workdir()
+	src := client.Host().Directory(".")
 
 	// initialize new container from image
-	golang := client.Container().From(golangImage)
-
-	// mount working directory to /src
-	golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
-
-	// execute command
-	cmd := golang.Exec(dagger.ContainerExecOpts{
-		Args: []string{"go", "run", "main.go"},
-	})
+	golang := client.Container().
+		From(golangImage).
+		WithMountedDirectory("/src", src).
+		WithWorkdir("/src").
+		WithExec([]string{"go", "run", "main.go"})
 
 	// get command output
-	out, err := cmd.Stdout().Contents(ctx)
+	out, err := golang.Stdout(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -76,21 +72,17 @@ func test(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src := client.Host().Workdir()
+	src := client.Host().Directory(".")
 
 	// initialize new container from image
-	golang := client.Container().From(golangImage)
-
-	// mount working directory to /src
-	golang = golang.WithMountedDirectory("/src", src).WithWorkdir("/src")
-
-	// execute command
-	cmd := golang.Exec(dagger.ContainerExecOpts{
-		Args: []string{"go", "test"},
-	})
+	golang := client.Container().
+		From(golangImage).
+		WithMountedDirectory("/src", src).
+		WithWorkdir("/src").
+		WithExec([]string{"go", "test"})
 
 	// get command output
-	out, err := cmd.Stdout().Contents(ctx)
+	out, err := golang.Stdout(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -107,35 +99,25 @@ func publish(ctx context.Context) {
 	defer client.Close()
 
 	// get working directory on host
-	src := client.Host().Workdir()
+	src := client.Host().Directory(".")
 
 	// initialize new container from image
-	builder := client.Container().From(golangImage)
-
-	// mount working directory to /src
-	builder = builder.WithMountedDirectory("/src", src).WithWorkdir("/src")
-
-	// execute build command
-	builder = builder.Exec(dagger.ContainerExecOpts{
-		Args: []string{"go", "build", "-o", "hello"},
-	})
-
-	// get built binary file
-	helloBin := builder.File("/src/hello")
+	builder := client.Container().
+		From(golangImage).
+		WithMountedDirectory("/src", src).
+		WithWorkdir("/src").
+		WithExec([]string{"go", "build", "-o", "hello"})
 
 	// initialize new container for publishing from image
 	base := client.Container().From(baseImage)
 
 	// mount binary file at container path
-	base = base.WithMountedFile("/tmp/hello", helloBin)
-
-	// copy mounted file to container filesystem
-	base = base.Exec(dagger.ContainerExecOpts{
-		Args: []string{"cp", "/tmp/hello", "/bin/hello"},
-	})
-
-	// set container entrypoint
-	base = base.WithEntrypoint([]string{"/bin/hello"})
+	base = base.WithRootfs(
+		base.Rootfs().WithFile(
+			"/bin/hello",
+			builder.File("/src/hello"),
+		),
+	).WithEntrypoint([]string{"/bin/hello"})
 
 	// publish image
 	addr, err := base.Publish(ctx, publishAddress)
