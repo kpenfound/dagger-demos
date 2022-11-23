@@ -8,7 +8,7 @@ async def test():
   async with dagger.Connection(dagger.Config(log_output=sys.stderr)) as client:
 
     # get reference to the local project
-    src_id = await client.host().workdir().id()
+    src_id = await client.host().directory(".").id()
 
     variants = []
     for platform in platforms:
@@ -18,12 +18,12 @@ async def test():
         .from_(f"python:3.10-slim-buster")
       )
 
-      multistage = await python.fs().with_directory("/src", src_id).id()
+      multistage = await python.rootfs().with_directory("/src", src_id).id()
 
       python = (
-        python.with_fs(multistage)
+        python.with_rootfs(multistage)
         .with_workdir("/src")
-        .exec(["pip", "install", "dagger-io"])
+        .with_exec(["pip", "install", "dagger-io"])
         .with_entrypoint(["python", "/src/main.py"])
       )
 
