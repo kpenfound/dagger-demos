@@ -16,12 +16,7 @@ async def test():
       python = (
         client.container(platform=platform)
         .from_(f"python:3.10-slim-buster")
-      )
-
-      multistage = await python.rootfs().with_directory("/src", src_id).id()
-
-      python = (
-        python.with_rootfs(multistage)
+        .with_directory("/src", src_id)
         .with_workdir("/src")
         .with_exec(["pip", "install", "dagger-io"])
         .with_entrypoint(["python", "/src/main.py"])

@@ -3,7 +3,7 @@ module github.com/kpenfound/dagger-demos
 go 1.18
 
 require (
-	dagger.io/dagger v0.4.1
+	dagger.io/dagger v0.4.2
 	gotest.tools/v3 v3.0.3
 )
 

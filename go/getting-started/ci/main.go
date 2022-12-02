@@ -109,15 +109,10 @@ func publish(ctx context.Context) {
 		WithExec([]string{"go", "build", "-o", "hello"})
 
 	// initialize new container for publishing from image
-	base := client.Container().From(baseImage)
-
-	// mount binary file at container path
-	base = base.WithRootfs(
-		base.Rootfs().WithFile(
-			"/bin/hello",
-			builder.File("/src/hello"),
-		),
-	).WithEntrypoint([]string{"/bin/hello"})
+	base := client.Container().
+		From(baseImage).
+		WithFile("/bin/hello", builder.File("/src/hello")).
+		WithEntrypoint([]string{"/bin/hello"})
 
 	// publish image
 	addr, err := base.Publish(ctx, publishAddress)
